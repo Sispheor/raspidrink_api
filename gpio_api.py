@@ -3,6 +3,8 @@ from flask_restful import Resource, Api, reqparse
 from make_celery import make_celery
 from tasks import *
 from FileLock import FileLock
+import json
+import ast
 app = Flask(__name__)
 
 # Celery configuration
@@ -14,6 +16,13 @@ celery = make_celery(app)
 
 # Initialize REST API
 api = Api(app)
+
+
+def get_highter_volume(slot_volume_dict):
+    list_volume = []
+    for el in slot_volume_dict:
+        list_volume.append(int(el['volume']))
+    return max(list_volume)
 
 
 class HelloWorld(Resource):
@@ -31,7 +40,16 @@ class Cocktail(Resource):
             # No lock file, we can make the cocktail
             json_data = request.get_json(force=True)
             slot_volume_dict = json_data['data']
+            # decode json. This give a string
+            slot_volume_dict = json.dumps(slot_volume_dict)
+            # use ast to convert str from unicode to a dict
+            slot_volume_dict = ast.literal_eval(slot_volume_dict)
             make_cocktail.delay(slot_volume_dict)
+            # get highest number in volume list
+            bigger_volume = get_highter_volume(slot_volume_dict)
+            # create file locker
+            filelock = FileLock("raspidrink", timeout=int(bigger_volume))
+            filelock.create_lock_file()
             return {'status': 'ok'}
 
 
