@@ -8,13 +8,14 @@ and making a cocktail
 
 class FileLock(object):
 
-    def __init__(self, fname, timeout):
+    def __init__(self, fname, timeout=None):
         self.fname = fname
         # path of the file.
         self.path = '/tmp/%s.lock' % self.fname
-        self.timeout = timeout
-        x = datetime.now() + timedelta(seconds=3)
-        x += timedelta(seconds=timeout)
+        x = datetime.now()
+        if timeout is not None:
+            x += timedelta(seconds=timeout)
+
         x = x.strftime("%d-%m-%Y %H:%M:%S")
         self.datetimeout = x
         self.pid = os.getpid()
@@ -71,4 +72,5 @@ class FileLock(object):
             return False
 
     def remove_lock_file(self):
-        pass
+        if os.path.exists(self.path):
+            os.remove(self.path)
