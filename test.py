@@ -16,14 +16,14 @@ filelock.create_lock_file()
 # -------------------------
 # Test API
 # -------------------------
-url = 'http://localhost:5000'
+url = 'http://192.168.0.22:5000'
 headers = {'content-type': 'application/json'}
 # get /
 #print get(url).json()
 
 # Test create cocktail
 payload = {'data': [
-    {'slot_id': '13', 'volume': '11'},
+    {'slot_id': '5', 'volume': '11'},
     {'slot_id': '1', 'volume': '5'}]}
 r = post(url+'/make_cocktail', data=json.dumps(payload), headers=headers)
 print r.text
