@@ -44,13 +44,7 @@ class FileLock(object):
             print "pid in file: "+pid_in_file
             # if the date set in the file is lower than now the process should be kill
             if datetime.strptime(datetimeout_in_file, "%d-%m-%Y %H:%M:%S") < datetime.now():
-                # check if the process still exist
-                if self.check_pid(int(pid_in_file)):
-                    return True
-                else:
-                    # the pid does not exist any more, we can remove the lock file
-                    self.remove_lock_file()
-                    return False
+                return False
             else:
                 return True
         else:
