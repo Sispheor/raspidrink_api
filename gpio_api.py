@@ -18,13 +18,6 @@ celery = make_celery(app)
 api = Api(app)
 
 
-def get_highter_volume(slot_volume_dict):
-    list_volume = []
-    for el in slot_volume_dict:
-        list_volume.append(int(el['volume']))
-    return max(list_volume)
-
-
 class HelloWorld(Resource):
     def get(self):
         return {'hello': 'world'}
@@ -45,11 +38,6 @@ class Cocktail(Resource):
             # use ast to convert str from unicode to a dict
             slot_volume_dict = ast.literal_eval(slot_volume_dict)
             make_cocktail.delay(slot_volume_dict)
-            # get highest number in volume list
-            bigger_volume = get_highter_volume(slot_volume_dict)
-            # create file locker
-            filelock = FileLock("raspidrink", timeout=int(bigger_volume))
-            filelock.create_lock_file()
             return {'status': 'ok'}
 
 
@@ -61,8 +49,13 @@ class ReversePump(Resource):
             return {'status': 'working'}
         else:
             # No lock file, we can reverse all pump
-            reverse_pump.delay()
-            return {'status': 'ok'}
+            json_data = request.get_json(force=True)
+            action = json_data['action']
+            if action not in ("on", "off"):
+                return {'error': 'Bad action'}
+            else:
+                reverse_pump.delay(action)
+                return {'status': 'ok'}
 
 
 class Pump(Resource):
@@ -81,8 +74,11 @@ class Pump(Resource):
             except KeyError, e:
                 slot_id = None
 
-            pump_management.delay(action, slot_id)
-            return {'status': 'ok'}
+            if action not in ("start", "stop"):
+                return {'error': 'Bad action'}
+            else:
+                pump_management.delay(action, slot_id)
+                return {'status': 'ok'}
 
 
 api.add_resource(HelloWorld, '/')
