@@ -2,6 +2,7 @@
 # Raspidrink settings
 # Use YAML syntax
 # ---------------------
+# Switch to True if the code is launch from the RPI. Leave False in development
 active_gpio: False
 
 # mapping port slot number --> GPIO port number
