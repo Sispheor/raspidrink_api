@@ -20,7 +20,7 @@ api = Api(app)
 
 class HelloWorld(Resource):
     def get(self):
-        return {'hello': 'world'}
+        return {'RaspiDrink GPIO API': 'online'}
 
 
 class Cocktail(Resource):
@@ -65,7 +65,6 @@ class Pump(Resource):
         if filelock.is_valide():
             return {'status': 'working'}
         else:
-            # No lock file, we can reverse all pump
             json_data = request.get_json(force=True)
             action = json_data['action']
             try:

@@ -1,8 +1,6 @@
 from threading import Thread
 import time
-import yaml
-import os
-import subprocess
+from lib.utils import *
 
 
 class GpioControl(Thread):
@@ -13,7 +11,7 @@ class GpioControl(Thread):
         Thread used to switch GPIO pin HIGH or LOW. Call sudo command because the GPIO library
         must be run as root on the RPI and celery must not. Furthermore, is this code can
         be launched from a computer that is not a RPI thanks to this split.
-        :param timeout: Time betxeend we switch the GPIO port from HIGH to LOW
+        :param timeout: Time between we switch the GPIO port from HIGH to LOW
         :param slot:   Slot number to switch
         :param action: If no timeout, set action to switch the slot. String allowed: start or stop
         :return:
@@ -23,12 +21,8 @@ class GpioControl(Thread):
         self.slot = slot
         self.action = action
 
-        # Load settings. Will be used to convert slot number into GPIO pin number
-        __location__ = os.path.realpath(
-        os.path.join(os.getcwd(), os.path.dirname(__file__)))
-        with open(os.path.join(__location__, "settings.yml")) as ymlfile:
-            self.cfg = yaml.load(ymlfile)
-            print self.cfg
+        # get settings
+        self.cfg = get_settings()
 
     def run(self):
         # if no slot provided, then switch every slot to the requested action
@@ -67,19 +61,15 @@ class GpioControl(Thread):
     def switch_pin_high(self, pin):
         if self.cfg['active_gpio']:
             print 'Switch GPIO slot '+str(pin)+' HIGH'
-            self._execute_script(pin, "HIGH")
+            execute_script(pin, "HIGH")
         else:
             print 'Fake Switch GPIO slot '+str(pin)+' HIGH'
 
     def switch_pin_low(self, pin):
         if self.cfg['active_gpio']:
             print 'Switch GPIO slot '+str(pin)+' LOW'
-            self._execute_script(pin, "LOW")
+            execute_script(pin, "LOW")
         else:
             print 'Fake Switch GPIO slot '+str(pin)+' LOW'
 
-    @staticmethod
-    def _execute_script(port, status):
-        cmd = "sudo python switch_gpio_port_status.py --port "+str(port)+" --status "+status
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
-        p.communicate()
+

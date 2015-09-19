@@ -1,12 +1,12 @@
 import os
 from datetime import datetime, timedelta
-"""
-The lock is used to know if RaspiDrink machine is currently running
-and making a cocktail
-"""
 
 
 class FileLock(object):
+    """
+    The lock is used to know if RaspiDrink machine is currently running
+    and making a cocktail
+    """
 
     def __init__(self, fname, timeout=None):
         self.fname = fname

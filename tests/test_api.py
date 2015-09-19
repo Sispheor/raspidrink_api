@@ -1,30 +1,21 @@
 """
-Test API file
+Test API file. This test every availlable function over the API.
 """
 import json
 from requests import put, get, post
-from FileLock import FileLock
 
 
-"""
-# create a lock file with 10 seconde of validity
-filelock = FileLock("raspidrink", 15)
-print filelock.is_valide()
-filelock.create_lock_file()
-
-"""
 # -------------------------
 # Test API
 # -------------------------
 # local test
-# url = 'http://localhost:5000'
+url = 'http://localhost:5000'
 # RPI2 test
-url = 'http://192.168.0.22:5000'
+# url = 'http://192.168.0.22:5000'
 headers = {'content-type': 'application/json'}
-# get /
-#print get(url).json()
 
-# Test create cocktail
+
+# Test make a cocktail
 payload = {'data': [
     {'slot_id': '1', 'volume': '5'},
     {'slot_id': '5', 'volume': '11'}]}
