@@ -5,7 +5,9 @@
 # Switch to True if the code is launched from the RPI. Leave False for development as the GPIO lib only works on a Rpi
 active_gpio: False
 
-# mapping port slot number --> GPIO port number
+# mapping port. configure your slot in reference to the selected port number over the rpi
+# slot number --> GPIO port number
+# The slot number 0 is reserved to the Rpi pin that control the reverse relay.
 gpio_mapping:
   0: 21
   1: 4

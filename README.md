@@ -1,5 +1,7 @@
 ## Installd requiered packages
+```
 sudo apt-get install python-dev python-pip python-yaml
+```
 
 ## Install Flask, Celery an GPIO library
 ```
@@ -15,8 +17,7 @@ sudo apt-get install rabbitmq-server
 ```
 
 ## Edit settings
-Edit the settings file settings.yml and configure your slot in reference to the selected port number over 
-the Rpi. The slot number 0 is reserved to the Rpi pin that control the reverse relay.
+Edit the settings file settings.yml. 
 
 ## Run Celery
 ```
