@@ -21,7 +21,7 @@ def make_cocktail(slot_volume_dict):
     print slot_volume_dict
     # run a thread for each slot
     for el in slot_volume_dict:
-        gpio_control = GpioControl(slot=el['slot_id'], timeout=el['volume'])
+        gpio_control = GpioControl(slot=el['slot_id'], volume=el['volume'])
         gpio_control.start()
     # get highest number in volume list
     bigger_volume = get_highter_volume(slot_volume_dict)

@@ -2,8 +2,12 @@
 # Raspidrink settings
 # Use YAML syntax
 # ---------------------
+
 # Switch to True if the code is launched from the RPI. Leave False for development as the GPIO lib only works on a Rpi
 active_gpio: False
+
+# Number of second to fill 1 cl with one pump. Volume * time_multiplier = time in second the pump with be powered to fill 1 cl
+time_multiplier: 2.5
 
 # mapping port. configure your slot in reference to the selected port number over the rpi
 # slot number --> GPIO port number

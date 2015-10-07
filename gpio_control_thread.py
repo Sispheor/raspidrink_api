@@ -6,18 +6,18 @@ from lib.utils import *
 class GpioControl(Thread):
 
     def __init__(self, group=None, target=None, name=None, args=(), kwargs=None, verbose=None,
-                 timeout=None, slot=None, action=None):
+                 volume=None, slot=None, action=None):
         """
         Thread used to switch GPIO pin HIGH or LOW. Call sudo command because the GPIO library
         must be run as root on the RPI and celery must not. Furthermore, is this code can
         be launched from a computer that is not a RPI thanks to this split.
-        :param timeout: Time between we switch the GPIO port from HIGH to LOW
+        :param volume: Volume to
         :param slot:   Slot number to switch
         :param action: If no timeout, set action to switch the slot. String allowed: start or stop
         :return:
         """
         super(GpioControl, self).__init__(group, target, name, args, kwargs, verbose)
-        self.timeout = timeout
+        self.timeout = self._convert_volume_into_time(volume)
         self.slot = slot
         self.action = action
 
@@ -72,4 +72,6 @@ class GpioControl(Thread):
         else:
             print 'Fake Switch GPIO slot '+str(pin)+' LOW'
 
-
+    def _convert_volume_into_time(self, volume):
+        time_multiplier = self.cfg['time_multiplier']
+        return volume * time_multiplier
