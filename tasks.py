@@ -2,31 +2,22 @@
 from celery.task import task
 from gpio_control_thread import GpioControl
 from FileLock import FileLock
-
-
-def get_highter_volume(slot_volume_dict):
-        """
-        Return the bigger integer in the list
-        :param slot_volume_dict:
-        :return:
-        """
-        list_volume = []
-        for el in slot_volume_dict:
-            list_volume.append(int(el['volume']))
-        return max(list_volume)
+from lib.utils import *
 
 
 @task()
 def make_cocktail(slot_volume_dict):
-    print slot_volume_dict
     # run a thread for each slot
+    """
     for el in slot_volume_dict:
         gpio_control = GpioControl(slot=el['slot_id'], volume=el['volume'])
         gpio_control.start()
-    # get highest number in volume list
-    bigger_volume = get_highter_volume(slot_volume_dict)
+    """
+    # get the timeout delay from this volume and the concerned slot
+    timeout_delay = get_time_delay_for_slot_and_volume(slot_volume_dict)
+    print "timeout max: "+str(timeout_delay)
     # create file locker
-    filelock = FileLock("raspidrink", timeout=int(bigger_volume))
+    filelock = FileLock("raspidrink", timeout=int(timeout_delay))
     filelock.create_lock_file()
 
 

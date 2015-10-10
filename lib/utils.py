@@ -17,3 +17,13 @@ def get_settings():
     with open(os.path.join(__location__, "../settings.yml")) as ymlfile:
         cfg = yaml.load(ymlfile)
     return cfg
+
+
+def get_time_delay_for_slot_and_volume(slot_volume_dict):
+    print slot_volume_dict
+    cfg = get_settings()
+    list_timeout = []
+    for el in slot_volume_dict:
+        timeout_1cl_for_slot = cfg['gpio_mapping'][int(el['slot_id'])]['time_for_1cl']
+        list_timeout.append(int(el['volume'])*timeout_1cl_for_slot)
+    return max(list_timeout)

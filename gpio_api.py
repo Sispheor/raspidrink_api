@@ -38,7 +38,8 @@ class Cocktail(Resource):
             # use ast to convert str from unicode to a dict
             slot_volume_dict = ast.literal_eval(slot_volume_dict)
             make_cocktail.delay(slot_volume_dict)
-            return {'status': 'ok'}
+            timeout_delay = get_time_delay_for_slot_and_volume(slot_volume_dict)
+            return {'status': 'ok', 'delay': timeout_delay}
 
 
 class ReversePump(Resource):
