@@ -17,24 +17,27 @@ class GpioControl(Thread):
         :return:
         """
         super(GpioControl, self).__init__(group, target, name, args, kwargs, verbose)
-        self.timeout = self._convert_volume_into_time(volume)
-        self.slot = slot
-        self.action = action
-
         # get settings
         self.cfg = get_settings()
+        self.timeout = volume
+        self.slot = int(slot)
+        self.action = action
+        # get the timeout delay for the selected slot
+        if self.timeout is not None and self.slot is not None:
+            self.timeout = self._convert_volume_into_time(volume)
 
     def run(self):
-        # if no slot provided, then switch every slot to the requested action
+        # if slot number provided, then switch only this one
         if self.slot:
-            try:
-                # convert slot number into GPIO port number
-                gpio_id = self.cfg['gpio_mapping'][int(self.slot)]
+            # convert slot number into GPIO port number
+            gpio_id = self._get_pin_from_slot_number()
+            # if the slot exist
+            if gpio_id is not -1:
                 if self.timeout:    # If a timeout is set, then we have to set the PIN HIGH and then LOW
                     # active the pump
                     self.switch_pin_high(gpio_id)
 
-                    # wait the timout before shutting down the pump
+                    print "Waiting timout before shutting down: "+str(self.timeout)
                     time.sleep(int(self.timeout))
 
                     # then the the pump
@@ -45,14 +48,13 @@ class GpioControl(Thread):
                         self.switch_pin_high(gpio_id)
                     else:
                         self.switch_pin_low(gpio_id)
-            except KeyError:
-                print "This slot does not exist"
-                return -1
-        else:
+
+        else:  # no precise slot provided, then switch every slot to the requested action
             gpio_ids = self.cfg['gpio_mapping']
             for gpio_id in gpio_ids:
-                if gpio_id is not 0:  # Skip the port number zero used to reverse pump stream order
-                    pin_to_switch = self.cfg['gpio_mapping'][gpio_id]
+                # Skip the port number zero used to reverse pump stream order
+                if gpio_id is not 0 and gpio_id is not -1:
+                    pin_to_switch = self._get_pin_from_slot_number()
                     if self.action == "start":
                         self.switch_pin_high(pin_to_switch)
                     else:
@@ -73,5 +75,14 @@ class GpioControl(Thread):
             print 'Fake Switch GPIO slot '+str(pin)+' LOW'
 
     def _convert_volume_into_time(self, volume):
-        time_multiplier = self.cfg['time_multiplier']
-        return volume * time_multiplier
+        time_multiplier = self.cfg['gpio_mapping'][self.slot]['time_for_1cl']
+        return int(volume) * int(time_multiplier)
+
+    def _get_pin_from_slot_number(self):
+        slot_number = -1
+        try:
+            slot_number = self.cfg['gpio_mapping'][self.slot]['pin_number']
+        except KeyError:
+                print "This slot does not exist"
+        return slot_number
+
