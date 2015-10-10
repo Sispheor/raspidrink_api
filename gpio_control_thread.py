@@ -76,7 +76,7 @@ class GpioControl(Thread):
 
     def _convert_volume_into_time(self, volume):
         time_multiplier = self.cfg['gpio_mapping'][self.slot]['time_for_1cl']
-        return int(volume) * int(time_multiplier)
+        return int(volume) * time_multiplier
 
     def _get_pin_from_slot_number(self):
         slot_number = -1

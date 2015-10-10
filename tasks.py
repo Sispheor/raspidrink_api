@@ -7,12 +7,10 @@ from lib.utils import *
 
 @task()
 def make_cocktail(slot_volume_dict):
-    # run a thread for each slot
-    """
+    # run a thread for each slot    
     for el in slot_volume_dict:
         gpio_control = GpioControl(slot=el['slot_id'], volume=el['volume'])
-        gpio_control.start()
-    """
+        gpio_control.start()    
     # get the timeout delay from this volume and the concerned slot
     timeout_delay = get_time_delay_for_slot_and_volume(slot_volume_dict)
     print "timeout max: "+str(timeout_delay)
