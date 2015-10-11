@@ -6,9 +6,6 @@
 # Switch to True if the code is launched from the RPI. Leave False for development as the GPIO lib only works on a Rpi
 active_gpio: False
 
-# Number of second to fill 1 cl with one pump. Volume * time_multiplier = time in second the pump with be powered to fill 1 cl
-time_multiplier: 2.5
-
 # mapping port. configure your slot in reference to the selected port number over the rpi
 # slot number --> GPIO port number
 #             --> Time for the pump behind this slot to fill 1 cl
@@ -19,47 +16,46 @@ gpio_mapping:
     time_for_1cl: 1
   1:
     pin_number: 4
-    time_for_1cl: 3.1
+    time_for_1cl: 4.8
   2:
     pin_number: 17
-    time_for_1cl: 3.3
+    time_for_1cl: 4.8
   3:
     pin_number: 27
-    time_for_1cl: 3.6
+    time_for_1cl: 5
   4:
     pin_number: 22
-    time_for_1cl: 3.25
+    time_for_1cl: 5.2
   5:
     pin_number: 5
-    time_for_1cl: 4.6
+    time_for_1cl: 5.7
   6:
     pin_number: 6
-    time_for_1cl: 3.6
+    time_for_1cl: 5
   7:
     pin_number: 13
-    time_for_1cl: 3.25
+    time_for_1cl: 4.7
   8:
     pin_number: 19
-    time_for_1cl: 2.85
+    time_for_1cl: 6
   9:
     pin_number: 26
-    time_for_1cl: 3.03
+    time_for_1cl: 5.1
   10:
     pin_number: 18
-    time_for_1cl: 3
+    time_for_1cl: 6
   11:
     pin_number: 23
-    time_for_1cl: 3
+    time_for_1cl: 5.1
   12:
     pin_number: 24
-    time_for_1cl: 3.1
+    time_for_1cl: 5
   13:
     pin_number: 25
-    time_for_1cl: 3
+    time_for_1cl: 4.6
   14:
     pin_number: 12
-    time_for_1cl: 3
+    time_for_1cl: 5.4
   15:
     pin_number: 16
-    time_for_1cl: 3.3
-
+    time_for_1cl: 4.6
