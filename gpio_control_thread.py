@@ -11,16 +11,19 @@ class GpioControl(Thread):
         Thread used to switch GPIO pin HIGH or LOW. Call sudo command because the GPIO library
         must be run as root on the RPI and celery must not. Furthermore, is this code can
         be launched from a computer that is not a RPI thanks to this split.
-        :param volume: Volume to
+        :param volume: Volume in cl
         :param slot:   Slot number to switch
-        :param action: If no timeout, set action to switch the slot. String allowed: start or stop
+        :param action: If no volume, set action to switch the slot. String allowed: start or stop
         :return:
         """
         super(GpioControl, self).__init__(group, target, name, args, kwargs, verbose)
         # get settings
         self.cfg = get_settings()
         self.timeout = volume
-        self.slot = int(slot)
+        if slot is not None:
+            self.slot = int(slot)
+        else:
+            self.slot = None
         self.action = action
         # get the timeout delay for the selected slot
         if self.timeout is not None and self.slot is not None:
@@ -28,7 +31,7 @@ class GpioControl(Thread):
 
     def run(self):
         # if slot number provided, then switch only this one
-        if self.slot:
+        if self.slot is not None:
             # convert slot number into GPIO port number
             gpio_id = self._get_pin_from_slot_number()
             # if the slot exist
@@ -54,7 +57,7 @@ class GpioControl(Thread):
             for gpio_id in gpio_ids:
                 # Skip the port number zero used to reverse pump stream order
                 if gpio_id is not 0 and gpio_id is not -1:
-                    pin_to_switch = self._get_pin_from_slot_number()
+                    pin_to_switch = self._get_pin_from_slot_number(gpio_id)
                     if self.action == "start":
                         self.switch_pin_high(pin_to_switch)
                     else:
@@ -75,14 +78,18 @@ class GpioControl(Thread):
             print 'Fake Switch GPIO slot '+str(pin)+' LOW'
 
     def _convert_volume_into_time(self, volume):
+        """
+        Convert a volume for the current slot into time. Each slot has it's own time
+        multiplier in the settings file.
+        :param volume: Volume in cl to convert
+        :return: time in second
+        """
         time_multiplier = self.cfg['gpio_mapping'][self.slot]['time_for_1cl']
         return int(volume) * time_multiplier
 
-    def _get_pin_from_slot_number(self):
-        slot_number = -1
+    def _get_pin_from_slot_number(self, slot_number):
         try:
-            slot_number = self.cfg['gpio_mapping'][self.slot]['pin_number']
+            pin_number = self.cfg['gpio_mapping'][slot_number]['pin_number']
         except KeyError:
                 print "This slot does not exist"
-        return slot_number
-
+        return pin_number

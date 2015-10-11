@@ -14,14 +14,14 @@ url = 'http://localhost:5000'
 # url = 'http://192.168.0.22:5000'
 headers = {'content-type': 'application/json'}
 
-
+"""
 # Test make a cocktail
 payload = {'data': [
-    {'slot_id': '1', 'volume': '5'},
-    {'slot_id': '5', 'volume': '11'}]}
+    {'slot_id': '2', 'volume': '2'},
+    {'slot_id': '3', 'volume': '3'}]}
 r = post(url+'/make_cocktail', data=json.dumps(payload), headers=headers)
 print r.text
-"""
+
 
 # Test start specific pump
 payload = {'slot_id': '4', 'action': 'start'}
