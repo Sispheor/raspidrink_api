@@ -33,7 +33,7 @@ class GpioControl(Thread):
         # if slot number provided, then switch only this one
         if self.slot is not None:
             # convert slot number into GPIO port number
-            gpio_id = self._get_pin_from_slot_number()
+            gpio_id = self._get_pin_from_slot_number(self.slot)
             # if the slot exist
             if gpio_id is not -1:
                 if self.timeout:    # If a timeout is set, then we have to set the PIN HIGH and then LOW
